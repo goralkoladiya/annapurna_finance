@@ -142,7 +142,7 @@ class AuthenticationViewModel extends ChangeNotifier {
         print(response);
         if(response['ForgotPasswordOTPVerificagtionData'][0]['status']!="False")
           {
-            Navigator.pushReplacement(context,
+            Navigator.push(context,
                       MaterialPageRoute(
                         builder: (context) {
                           return ResetPassword();
@@ -151,7 +151,7 @@ class AuthenticationViewModel extends ChangeNotifier {
           }
         else
           {
-            Navigator.pushReplacement(context,
+            Navigator.push(context,
                       MaterialPageRoute(
                         builder: (context) {
                           return ResetPassword();
