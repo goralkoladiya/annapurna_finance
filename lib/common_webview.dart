@@ -165,12 +165,11 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
                   Expanded(
                     child: GestureDetector(
                       onTap: (){
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => NotificationWebView(url: widget.url),
-                        //     ));
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommonWebView(url: widget.url),
+                            ));
                       },
                       child: const Text(
                         'Dashboard',
