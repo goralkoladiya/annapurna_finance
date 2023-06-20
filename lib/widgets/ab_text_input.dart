@@ -14,6 +14,7 @@ class ABTextInput extends StatelessWidget {
   final Widget? prefix, suffix;
   final int? maxLength;
   final int? minLength;
+  final Color? iserror;
   final Function()? onTap;
   final bool? isPassword, countryCodeEnabled, isEnabled;
   final bool? isSimpleField;
@@ -38,6 +39,7 @@ class ABTextInput extends StatelessWidget {
       this.autoValidator,
       this.helperText,
       this.suffixText,
+      this.iserror,
       this.prefixText,
       this.prefix,
       this.labelText,
@@ -71,10 +73,10 @@ class ABTextInput extends StatelessWidget {
           margin: EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.01,
               left: 15,
-              right: MediaQuery.of(context).size.width * 0.075
-          ),
+              right: MediaQuery.of(context).size.width * 0.075),
           alignment: Alignment.topLeft,
-          child: Text(titleText!,
+          child: Text(
+            titleText!,
             style: TextStyle(
                 //fontFamily: Strings.proximaNovaFont,
                 letterSpacing: -0.01,
@@ -84,7 +86,8 @@ class ABTextInput extends StatelessWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 5),
+          margin:
+              const EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 5),
           child: TextFormField(
             cursorColor: ThemeColor.primary,
             keyboardType: textInputType ?? TextInputType.text,
@@ -100,21 +103,35 @@ class ABTextInput extends StatelessWidget {
             onTap: onTap,
             decoration: InputDecoration(
               errorStyle: const TextStyle(fontSize: 11, height: 1.0),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: iserror ?? Colors.red,
+                ),
+                borderRadius: BorderRadius.circular(7),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: iserror ?? Colors.red,
+                ),
+                borderRadius: BorderRadius.circular(7),
+              ),
               enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Color(0xff9aa4b0),
+                borderSide: BorderSide(
+                  color: iserror ?? Color(0xff9aa4b0),
                 ),
                 borderRadius: BorderRadius.circular(7),
-              ),focusedBorder: OutlineInputBorder(
-                borderSide:  BorderSide(
-                  color:ThemeColor.primary,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: iserror ?? ThemeColor.primary,
                 ),
                 borderRadius: BorderRadius.circular(7),
-              ),suffixIconColor:ThemeColor.primary ,
+              ),
+              suffixIconColor: ThemeColor.primary,
               contentPadding: const EdgeInsets.all(12),
               hintText: hintText,
               hintStyle: TextStyle(
-               // fontFamily: Strings.proximaNovaFont,
+                // fontFamily: Strings.proximaNovaFont,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
                 color: const Color(0xff9aa4b0),
@@ -128,7 +145,7 @@ class ABTextInput extends StatelessWidget {
             style: TextStyle(
               color: Colors.black,
               fontSize: 14.0,
-             // fontFamily: Strings.proximaNovaFont,
+              // fontFamily: Strings.proximaNovaFont,
               fontWeight: FontWeight.w400,
             ),
           ),

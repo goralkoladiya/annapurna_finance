@@ -1,3 +1,4 @@
+import 'package:annapurna_finance/utils/theme_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,7 +30,7 @@ showLogoutDialog(BuildContext context, String userId) {
         borderRadius: BorderRadius.circular(16.0.r),
       ),
       title: Text(
-        'Logout',
+        'Logout',style: TextStyle(color: ThemeColor.primary)
       ),
       content: Text(
       'Are you sure you want to logout?',
@@ -40,7 +41,7 @@ showLogoutDialog(BuildContext context, String userId) {
             Navigator.pop(context);
           },
           child: Text(
-           'Cancel',
+           'Cancel',style: TextStyle(color: ThemeColor.black),
           ),
         ),
         TextButton(
@@ -50,7 +51,7 @@ showLogoutDialog(BuildContext context, String userId) {
           },
           child: Text(
             'Logout',
-            style: Theme.of(context).textTheme.bodyText2,
+            style: TextStyle(color: ThemeColor.primary),
           ),
         ),
       ],

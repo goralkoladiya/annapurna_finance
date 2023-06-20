@@ -3,6 +3,7 @@ import 'package:annapurna_finance/NoNetwork.dart';
 import 'package:annapurna_finance/common_webview.dart';
 import 'package:annapurna_finance/forgot_password/forgotPasswordPage.dart';
 import 'package:annapurna_finance/notifier/providers.dart';
+import 'package:annapurna_finance/utils/theme_config.dart';
 import 'package:annapurna_finance/widgets/ab_button.dart';
 import 'package:annapurna_finance/widgets/ab_text_input.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -86,6 +87,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                         fontWeight: FontWeight.bold)),
                               ),
                               ABTextInput(
+                                iserror: ref.watch(authenticationProvider).loginresult?null:Colors.red,
                                 autoValidator: AutovalidateMode.onUserInteraction,
                                 titleText: 'Username',
                                 validator: (value) {
@@ -101,6 +103,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: ABTextInput(
+                                  iserror: ref.watch(authenticationProvider).loginresult?null:Colors.red,
                                   titleText: 'Password',
                                   validator: (value) {
                                     if (inputtedValue != null && (value == null || value.isEmpty || value.length <= 6 )) {
@@ -113,6 +116,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                   hintText: 'Enter Password',
                                   isPassword: _isObscure,
                                   suffix: IconButton(
+                                    color: ThemeColor.primary,
                                     icon: Icon(_isObscure
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined),
@@ -124,7 +128,15 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                   ),
                                 ),
                               ),
-
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: Row(
+                                  children: [
+                                    ref.watch(authenticationProvider).loginresult?SizedBox():Icon(Icons.error_outline,color: Colors.red),
+                                    ref.watch(authenticationProvider).loginresult?SizedBox():Text("The username or password is incorrect!",style: TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                              ),
                               Row(
                                 children: [
                                   Checkbox(
@@ -156,7 +168,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                 paddingLeft: 20.0,
                                 paddingRight: 20.0,
                                 text: 'LOGIN',
-                                onPressed: (!userInteracts() || _formKey.currentState == null || !_formKey.currentState!.validate() ) ? null :() {
+                                onPressed: (!userInteracts() || _formKey.currentState == null || !_formKey.currentState!.validate()) ? null :() {
                                   ref.watch(authenticationProvider).loginAPI(
                                           context: context,
                                           userName: _userNameController.text,
@@ -165,7 +177,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                 },
 
                               ),
-                              Text("${ref.watch(authenticationProvider).loginresult}")
+                              // Text("${ref.watch(authenticationProvider).loginresult}"),
+                              // Text("${(!userInteracts() || _formKey.currentState == null || !_formKey.currentState!.validate()) && !ref.watch(authenticationProvider).loginresult}")
                             ],
 
                           )
