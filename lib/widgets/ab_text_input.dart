@@ -93,6 +93,7 @@ class ABTextInput extends StatelessWidget {
                 : customInputFormatters,
             validator: (val) => validator != null ? validator!(val) : null,
             maxLength: maxLength,
+            onChanged: onChange,
             readOnly: isEnabled ?? false,
             obscureText: isPassword ?? false,
             controller: controller,
@@ -109,7 +110,7 @@ class ABTextInput extends StatelessWidget {
                   color:ThemeColor.primary,
                 ),
                 borderRadius: BorderRadius.circular(7),
-              ),
+              ),suffixIconColor:ThemeColor.primary ,
               contentPadding: const EdgeInsets.all(12),
               hintText: hintText,
               hintStyle: TextStyle(

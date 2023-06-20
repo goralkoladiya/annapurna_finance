@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:annapurna_finance/AppImages.dart';
 import 'package:annapurna_finance/api_factory/api.dart';
 import 'package:annapurna_finance/api_factory/api_end_points.dart';
 import 'package:annapurna_finance/api_factory/base_view_model.dart';
 import 'package:annapurna_finance/api_factory/prefs/pref_utils.dart';
 import 'package:annapurna_finance/api_factory/user_model.dart';
 import 'package:annapurna_finance/common_webview.dart';
+import 'package:annapurna_finance/forgot_password/forgotPasswordPage.dart';
 import 'package:annapurna_finance/login/login_view.dart';
 import 'package:annapurna_finance/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +70,7 @@ class AuthenticationViewModel extends ChangeNotifier {
       },
     );
   }
-  void forgotPasswordAPI({
+  void sendotpAPI({
     required BuildContext context,
     required String userName,
     required String MobileNumber,
@@ -81,29 +83,31 @@ class AuthenticationViewModel extends ChangeNotifier {
     };
     Api.request(
       method: HttpMethod.post,
-      path: ApiEndPoints.ForgotPassword,
+      path: ApiEndPoints.sendotp,
       params: params,
       isCustomResponse: true,
       context: context,
       onResponse: (response) {
-
-        print(response);
-        if (response['status'] != false) {
-          showSuccessSnackbar(response['message'], context);
-
-          PrefUtils.clearPrefs();
+        myDialog(context, AppImages.done, "OTP Sent Successfully!","Okay", 200, 200,press:(){
           Navigator.pop(context);
-          // Navigator.pushReplacement(context,
-          //     MaterialPageRoute(
-          //       builder: (context) {
-          //         return LoginView();
-          //       },
-          //     ));
-        }else{
-
-          handleApiError(response['message'], context);
-
-        }
+        });
+        print(response);
+        // if (response['status'] != false) {
+        //   showSuccessSnackbar(response['message'], context);
+        //
+        //   PrefUtils.clearPrefs();
+        //   Navigator.pop(context);
+        //   // Navigator.pushReplacement(context,
+        //   //     MaterialPageRoute(
+        //   //       builder: (context) {
+        //   //         return LoginView();
+        //   //       },
+        //   //     ));
+        // }else{
+        //
+        //   handleApiError(response['message'], context);
+        //
+        // }
 
       },
     );
@@ -122,33 +126,33 @@ class AuthenticationViewModel extends ChangeNotifier {
     };
     Api.request(
       method: HttpMethod.post,
-      path: ApiEndPoints.OTP,
+      path: ApiEndPoints.ForgotPasswordOTPVerificagtion,
       params: params,
       isCustomResponse: true,
       context: context,
       onResponse: (response) {
 
         print(response);
-        if (response['status'] != false) {
-          showSuccessSnackbar(response['message'], context);
-
-          PrefUtils.setUserid(userName);
-          PrefUtils.setMobileNumber(Phoneno);
-          PrefUtils.setOTP(OTPNO);
-
-          PrefUtils.clearPrefs();
-          // Navigator.pop(context);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return LoginView();
-                },
-              ));
-        }else{
-
-          handleApiError(response['message'], context);
-
-        }
+        // if (response['status'] != false) {
+        //   showSuccessSnackbar(response['message'], context);
+        //
+        //   PrefUtils.setUserid(userName);
+        //   PrefUtils.setMobileNumber(Phoneno);
+        //   PrefUtils.setOTP(OTPNO);
+        //
+        //   PrefUtils.clearPrefs();
+        //   // Navigator.pop(context);
+        //   Navigator.pushReplacement(context,
+        //       MaterialPageRoute(
+        //         builder: (context) {
+        //           return LoginView();
+        //         },
+        //       ));
+        // }else{
+        //
+        //   handleApiError(response['message'], context);
+        //
+        // }
 
       },
     );

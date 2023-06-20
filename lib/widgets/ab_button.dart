@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ABButton extends StatelessWidget {
-  final Function() onPressed;
+  final Function()? onPressed;
   final String? text;
   final double? paddingTop;
   final double? paddingBottom;

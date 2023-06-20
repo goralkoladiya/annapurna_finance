@@ -67,24 +67,25 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         backgroundColor: Colors.white,
         title: Image.asset(AppImages.logo, width: 200),
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
-          GestureDetector(
-            onTap: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  const NotificationWebView(url: 'http://maximoglobalsystems.com/main/landing/staff/notfication'),
-                  ));
-
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(Icons.notifications_active),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: (){
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) =>  const NotificationWebView(url: 'http://maximoglobalsystems.com/main/landing/staff/notfication'),
+          //         ));
+          //
+          //   },
+          //   child: const Padding(
+          //     padding: EdgeInsets.all(4.0),
+          //     child: Icon(Icons.notifications_active),
+          //   ),
+          // ),
           GestureDetector(
             onTap: () async {
               final Uri launchUri = Uri(
@@ -92,9 +93,9 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
                 path: '100',
               );
               await launchUrl(launchUri);            },
-            child: const Padding(
+            child:  Padding(
               padding: EdgeInsets.all(4.0),
-              child: Icon(Icons.sos_outlined, color: Colors.red),
+              child: Image.asset("assets/images/help.png",height: 30,width: 30,),
             ),
           ),
           const Padding(
