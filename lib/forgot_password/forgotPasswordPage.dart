@@ -37,199 +37,197 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
     double navbar=MediaQuery.of(context).padding.bottom;
     double bheight=theight-statusbar-navbar;
     return Scaffold(
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: Image.asset(AppImages.waveOne, width: 300),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      child: Image.asset(AppImages.waveTwo),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Center(child: Image.asset(AppImages.logo, width: 250)),
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                                    height: bheight*0.68,
-                                    width: twidth*0.85,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.black,
-                                            width: 3
+        body: Form(
+          key: _formKey,
+          child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: Image.asset(AppImages.waveOne, width: 300),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: Image.asset(AppImages.waveTwo),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Center(child: Image.asset(AppImages.logo, width: 250)),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                                  height: bheight*0.75,
+                                  width: twidth*0.85,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black,
+                                          width: 3
+                                      ),
+                                      borderRadius: const BorderRadius.all(Radius.circular(20))
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(top: 31.0, left: defaultPadding, bottom: 10),
+                                        child: Text('Forgot Password',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 19,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      ABTextInput(
+                                        autoValidator: AutovalidateMode.onUserInteraction,
+                                        titleText: 'Employee ID',
+                                        controller: UserId,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter Employee ID';
+                                          }return null;
+                                        },
+                                        hintText: 'Enter Employee ID',
+                                      ),
+                                      SizedBox(height: bheight*0.01,),
+                                      ABTextInput(
+                                        controller: MobileNumber,
+                                        textInputType: TextInputType.phone,
+                                        autoValidator: AutovalidateMode.onUserInteraction,
+                                        titleText: 'Registered Mobile Number',
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter Phone number';
+                                          }return null;
+                                        },
+                                        hintText: 'Enter No.',
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: bheight*0.025,bottom: bheight*0.01,right: defaultPadding),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            InkWell(onTap: () async {
+                                              if (_formKey.currentState!.validate()) {
+                                                FocusManager.instance.primaryFocus?.unfocus();
+                                                ref.watch(authenticationProvider).sendotpAPI(
+                                                  context: context,
+                                                  userName: UserId.text,
+                                                  MobileNumber : MobileNumber.text,
+                                                );
+                                              }
+
+                                              setState(() {
+                                                otpText="Resend OTP in 120 seconds";
+                                              });
+                                             },
+                                              child: Text(otpText,style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
+                                            )
+                                          ],
                                         ),
-                                        borderRadius: const BorderRadius.all(Radius.circular(20))
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(top: 31.0, left: defaultPadding, bottom: 10),
-                                          child: Text('Forgot Password',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.bold)),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(bottom: bheight*0.02,right: defaultPadding),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            InkWell(child: Text("(${ref.watch(authenticationProvider).noofotpsend} Attempts left)",))
+                                          ],
                                         ),
-                                        ABTextInput(
-                                          autoValidator: AutovalidateMode.onUserInteraction,
-                                          titleText: 'Employee ID',
-                                          controller: UserId,
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter Employee ID';
-                                            }return null;
-                                          },
-                                          hintText: 'Enter Employee ID',
+                                      ),
+                                      Padding( padding: EdgeInsets.only(left: defaultPadding),child: InkWell(child: Text("OTP",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),),
+                                      SizedBox(height: bheight*0.01,),
+                                      OTPTextField(
+
+                                        controller: OTP,
+                                        margin: EdgeInsets.symmetric(horizontal: 1),
+                                        // contentPadding: ,
+                                        length: 6,
+
+                                        otpFieldStyle: OtpFieldStyle(
+                                          borderColor: ThemeColor.primary,
+                                          enabledBorderColor: ThemeColor.primary,
+                                          focusBorderColor: ThemeColor.primary
                                         ),
-                                        SizedBox(height: bheight*0.01,),
-                                        ABTextInput(
-                                          controller: MobileNumber,
-                                          textInputType: TextInputType.phone,
-                                          autoValidator: AutovalidateMode.onUserInteraction,
-                                          titleText: 'Registered Mobile Number',
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter Phone number';
-                                            }return null;
-                                          },
-                                          hintText: 'Enter No.',
+                                        width: MediaQuery.of(context).size.width,
+                                        fieldWidth: twidth*0.1090,
+                                        style: TextStyle(
+                                            fontSize: bheight*0.03
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: bheight*0.025,bottom: bheight*0.01,right: defaultPadding),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              InkWell(onTap: () async {
-                                                if (_formKey.currentState!.validate()) {
-                                                  FocusManager.instance.primaryFocus?.unfocus();
-                                                  ref.watch(authenticationProvider).sendotpAPI(
+                                        textFieldAlignment: MainAxisAlignment.center,
+                                        fieldStyle: FieldStyle.box,
+                                        onCompleted: (pin) async {
+                                          setState(() {
+                                            otp=pin;
+                                          });
+                                          if (_formKey.currentState!.validate()) {
+                                            FocusManager.instance.primaryFocus?.unfocus();
+                                            ref.watch(authenticationProvider).OTPVerificationAPI(
+                                              context: context,
+                                              Phoneno : MobileNumber.text,
+                                              userName: UserId.text,
+                                              OTPNO : pin,
+
+
+                                            );
+                                          }
+                                          print("Completed: " + pin);
+                                        },
+                                      ),
+                                      SizedBox(height: bheight*0.01,),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                                        child: Text("(Please enter verification code sent on your number)",style: TextStyle(fontSize: bheight*0.013),),
+                                      ),
+                                      SizedBox(height: bheight*0.02,),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+                                                onPressed: () {
+                                                  ref.watch(authenticationProvider).OTPVerificationAPI(
                                                     context: context,
+                                                    Phoneno : MobileNumber.text,
                                                     userName: UserId.text,
-                                                    MobileNumber : MobileNumber.text,
+                                                    OTPNO : otp,
                                                   );
-                                                }
 
-                                                setState(() {
-                                                  otpText=Strings.resendOTP;
-                                                });
-                                               },
-                                                child: Text(otpText,style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
-                                              )
-                                            ],
+                                                }, child: Text("Verify & Next")),
                                           ),
-                                        ),
-                                        // Padding(
-                                        //   padding: EdgeInsets.only(bottom: bheight*0.02,right: defaultPadding),
-                                        //   child: Row(
-                                        //     mainAxisAlignment: MainAxisAlignment.end,
-                                        //     children: [
-                                        //       InkWell(child: Text(Strings.resendOTP,style: TextStyle(decoration: TextDecoration.underline,color: kPrimaryColor),))
-                                        //     ],
-                                        //   ),
-                                        // ),
-                                        Padding( padding: EdgeInsets.only(left: defaultPadding),child: InkWell(child: Text("OTP",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),),
-                                        SizedBox(height: bheight*0.01,),
-                                        OTPTextField(
-
-                                          controller: OTP,
-                                          margin: EdgeInsets.symmetric(horizontal: 1),
-                                          // contentPadding: ,
-                                          length: 6,
-
-                                          otpFieldStyle: OtpFieldStyle(
-                                            borderColor: ThemeColor.primary,
-                                            enabledBorderColor: ThemeColor.primary,
-                                            focusBorderColor: ThemeColor.primary
-                                          ),
-                                          width: MediaQuery.of(context).size.width,
-                                          fieldWidth: twidth*0.1090,
-                                          style: TextStyle(
-                                              fontSize: bheight*0.03
-                                          ),
-                                          textFieldAlignment: MainAxisAlignment.center,
-                                          fieldStyle: FieldStyle.box,
-                                          onCompleted: (pin) async {
-                                            setState(() {
-                                              otp=pin;
-                                            });
-                                            if (_formKey.currentState!.validate()) {
-                                              FocusManager.instance.primaryFocus?.unfocus();
-                                              ref.watch(authenticationProvider).OTPVerificationAPI(
-                                                context: context,
-                                                Phoneno : MobileNumber.text,
-                                                userName: UserId.text,
-                                                OTPNO : pin,
-
-
-                                              );
-                                            }
-                                            print("Completed: " + pin);
-                                          },
-                                        ),
-                                        SizedBox(height: bheight*0.01,),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                                          child: Text("(Please enter verification code sent on your number)",style: TextStyle(fontSize: bheight*0.013),),
-                                        ),
-                                        SizedBox(height: bheight*0.02,),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                                                  onPressed: () {
-                                                    ref.watch(authenticationProvider).OTPVerificationAPI(
-                                                      context: context,
-                                                      Phoneno : MobileNumber.text,
-                                                      userName: UserId.text,
-                                                      OTPNO : otp,
-                                                    );
-
-                                                  }, child: Text("Verify & Next")),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(child: OutlinedButton(
+                                            style: OutlinedButton.styleFrom(
+                                                side: BorderSide(color: Colors.deepPurple,width: 2)
                                             ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(child: OutlinedButton(
-                                              style: OutlinedButton.styleFrom(
-                                                  side: BorderSide(color: Colors.deepPurple,width: 2)
-                                              ),
-                                              onPressed: () async {
+                                            onPressed: () async {
 
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginView(),));
-                                              },
-                                              child: Text("Back to Login",style: TextStyle(color: Colors.deepPurple)),
-                                            ))
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                )
-            ),
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginView(),));
+                                            },
+                                            child: Text("Back to Login",style: TextStyle(color: Colors.deepPurple)),
+                                          ))
+                                        ],
+                                      )
+                                    ],
+                                  )
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              )
           ),
         )
     );

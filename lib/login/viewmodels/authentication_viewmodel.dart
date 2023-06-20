@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 class AuthenticationViewModel extends ChangeNotifier {
   UserModel? _kCurrentUser;
 
-
+  int noofotpsend=3;
   UserModel? get kCurrentUser => _kCurrentUser;
 
   set kCurrentUser(UserModel? value) {
@@ -93,6 +93,10 @@ class AuthenticationViewModel extends ChangeNotifier {
           Navigator.pop(context);
         });
         print(response);
+        if(noofotpsend<1)
+          {
+            noofotpsend=noofotpsend-1;
+          }
         // if (response['status'] != false) {
         //   showSuccessSnackbar(response['message'], context);
         //
