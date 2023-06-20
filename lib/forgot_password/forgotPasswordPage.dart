@@ -124,9 +124,9 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
                                                   );
                                                 }
 
-                                                // setState(() {
-                                                //   otpText=Strings.resendOTP;
-                                                // });
+                                                setState(() {
+                                                  otpText=Strings.resendOTP;
+                                                });
                                                },
                                                 child: Text(otpText,style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
                                               )

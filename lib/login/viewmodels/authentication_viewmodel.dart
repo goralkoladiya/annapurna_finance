@@ -36,6 +36,7 @@ class AuthenticationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool loginresult=true;
   void loginAPI({
     required BuildContext context,
     required String userName,
@@ -60,12 +61,12 @@ class AuthenticationViewModel extends ChangeNotifier {
           showSuccessSnackbar(response['message'], context);
           PrefUtils.setUserid(userName);
           userDetail(context: context, userName: userName);
-
+          loginresult=true;
         }else{
-
+          loginresult=false;
           handleApiError(response['message'], context);
-
         }
+        notifyListeners();
 
       },
     );

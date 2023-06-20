@@ -164,7 +164,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                         );
                                 },
 
-                              )
+                              ),
+                              Text("${ref.watch(authenticationProvider).loginresult}")
                             ],
 
                           )
