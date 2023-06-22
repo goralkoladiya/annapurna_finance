@@ -62,10 +62,12 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
     });
     super.initState();
   }
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         titleSpacing: 0,
         backgroundColor: Colors.white,
@@ -165,11 +167,17 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
                   Expanded(
                     child: GestureDetector(
                       onTap: (){
+                        if (_scaffoldKey.currentState!.isDrawerOpen) {
+                          _scaffoldKey.currentState!.openEndDrawer();
+                        } else {
+                          _scaffoldKey.currentState!.openDrawer();
+                        }
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CommonWebView(url: widget.url),
                             ));
+                        // Navigator.pop(context);
                       },
                       child: const Text(
                         'Dashboard',

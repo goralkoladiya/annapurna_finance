@@ -8,9 +8,11 @@ import 'package:annapurna_finance/api_factory/base_view_model.dart';
 import 'package:annapurna_finance/api_factory/prefs/pref_utils.dart';
 import 'package:annapurna_finance/api_factory/user_model.dart';
 import 'package:annapurna_finance/common_webview.dart';
+import 'package:annapurna_finance/constants.dart';
 import 'package:annapurna_finance/forgot_password/forgotPasswordPage.dart';
 import 'package:annapurna_finance/login/login_view.dart';
 import 'package:annapurna_finance/reset_password/resetPassword.dart';
+import 'package:annapurna_finance/utils/theme_config.dart';
 import 'package:annapurna_finance/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,7 @@ import 'package:flutter/material.dart';
 class AuthenticationViewModel extends ChangeNotifier {
   UserModel? _kCurrentUser;
 
+  bool otpsend=false;
   int noofotpsend=3;
   UserModel? get kCurrentUser => _kCurrentUser;
 
@@ -90,32 +93,31 @@ class AuthenticationViewModel extends ChangeNotifier {
       isCustomResponse: true,
       context: context,
       onResponse: (response) {
-        myDialog(context, AppImages.done, "OTP Sent Successfully!","Okay", 200, 200,press:(){
-          Navigator.pop(context);
-        });
-        print(response);
-        if(noofotpsend<1)
+
+        // otpsend=true;
+        // print(response);
+        // if(noofotpsend>=1)
+        // {
+        //   noofotpsend=noofotpsend-1;
+        // }
+        if(response['RestPasswordOTPsendDetails'][0]['status']!="False")
           {
-            noofotpsend=noofotpsend-1;
+            myDialog(context, AppImages.done, "OTP Sent Successfully!","Okay", 200, 200,press:(){
+              otpsend=true;
+              print(response);
+              if(noofotpsend>=1)
+              {
+                noofotpsend=noofotpsend-1;
+              }
+              Navigator.pop(context);
+            });
+
+          }
+        else
+          {
+            otpsend=false;
           }
         notifyListeners();
-        // if (response['status'] != false) {
-        //   showSuccessSnackbar(response['message'], context);
-        //
-        //   PrefUtils.clearPrefs();
-        //   Navigator.pop(context);
-        //   // Navigator.pushReplacement(context,
-        //   //     MaterialPageRoute(
-        //   //       builder: (context) {
-        //   //         return LoginView();
-        //   //       },
-        //   //     ));
-        // }else{
-        //
-        //   handleApiError(response['message'], context);
-        //
-        // }
-
       },
     );
   }
@@ -184,12 +186,11 @@ class AuthenticationViewModel extends ChangeNotifier {
   }
   void changePasswordAPI({
     required BuildContext context,
-    required String userName,
     required String ConfirmPassword,
     required String NewPassword,
   }) {
     var params = {
-      "UserID": userName,
+      "UserID": kCurrentUser!.userid,
       "NewPassword": NewPassword,
       "ConfirmPassword" : ConfirmPassword,
 
@@ -203,6 +204,53 @@ class AuthenticationViewModel extends ChangeNotifier {
       onResponse: (response) {
 
         print(response);
+        if(response['ForgotPasswordUpdateDetails'][0]['status']!="False")
+          {
+            showDialog(context: context, builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                elevation: 10,
+                child: Container(
+                  height: 270,
+                  width: 150,
+                  decoration:  BoxDecoration(
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image.asset(AppImages.done,height: 70,width: 70,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: defaultPadding,right: defaultPadding),
+                        child: Text("Your Password has been updated successfully",textAlign: TextAlign.center,),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: defaultPadding,right: defaultPadding),
+                              child: ElevatedButton(onPressed: () {
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return LoginView();
+                                      },
+                                    ));
+                              }, style:  ElevatedButton.styleFrom(
+                                backgroundColor: ThemeColor.primary,
+                                foregroundColor: Colors.white,
+                                side: BorderSide(color: ThemeColor.primary),
+                              ),child: Text("Back to login",)),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },);
+          }
         // if (response['status'] != false) {
         //   showSuccessSnackbar(response['message'], context);
         //

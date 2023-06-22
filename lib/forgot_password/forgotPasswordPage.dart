@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:annapurna_finance/AppImages.dart';
 import 'package:annapurna_finance/api_factory/prefs/pref_utils.dart';
 import 'package:annapurna_finance/constants.dart';
@@ -32,6 +34,63 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
   // recording fieldInput
   String? inputtedValue;
   bool userInteracts() => inputtedValue != null;
+  int secondsRemaining = 0;
+  bool enableResend = false;
+  Timer? timer;
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    ref.watch(authenticationProvider).noofotpsend=3;
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (secondsRemaining != 0) {
+        setState(() {
+          secondsRemaining--;
+        });
+      } else {
+        setState(() {
+          enableResend = true;
+        });
+      }
+    });
+    print("====${enableResend}");
+  }
+  void _resendCode() {
+    if(ref.watch(authenticationProvider).noofotpsend==0)
+      {
+        myDialog(context,"assets/alert.png", "Maximum Attempt Reached.\n Please try after a while","Okay", 270, 200,press:(){
+          Navigator.pop(context);
+        });
+
+      }
+    else
+      {
+        if (_formKey.currentState!.validate()) {
+          FocusManager.instance.primaryFocus?.unfocus();
+          ref.watch(authenticationProvider).sendotpAPI(
+            context: context,
+            userName: UserId.text,
+            MobileNumber : MobileNumber.text,
+          );
+        }
+        setState((){
+          secondsRemaining = 10;
+          enableResend = false;
+        });
+      }
+
+  }
+  @override
+  dispose(){
+    timer!.cancel();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double theight=MediaQuery.of(context).size.height;
@@ -119,20 +178,13 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
-                                              InkWell(onTap: () async {
-                                                if (_formKey.currentState!.validate()) {
-                                                  FocusManager.instance.primaryFocus?.unfocus();
-                                                  ref.watch(authenticationProvider).sendotpAPI(
-                                                    context: context,
-                                                    userName: UserId.text,
-                                                    MobileNumber : MobileNumber.text,
-                                                  );
-                                                }
-                                                setState(() {
-                                                  otpText="Resend OTP in 120 seconds";
-                                                });
-                                               },
-                                                child: Text(otpText,style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
+                                              InkWell(onTap: enableResend ? ()  {
+
+                                                _resendCode();
+
+                                               }: null,
+                                                child:!ref.watch(authenticationProvider).otpsend? Text("Send OTP",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),):
+                                                Text("Resend OTP in $secondsRemaining seconds",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
                                               )
                                             ],
                                           ),
@@ -236,8 +288,7 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
     );
   }
 }
-myDialog(BuildContext context,String image,String text,String buttonText,double height,double width,
-    {press}){
+myDialog(BuildContext context,String image,String text,String buttonText,double height,double width,{press}){
   showDialog(context: context, builder: (context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -252,7 +303,7 @@ myDialog(BuildContext context,String image,String text,String buttonText,double 
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(image,height: 70,width: 70,),
-            Text("${text}"),
+            Text("${text}",textAlign: TextAlign.center,),
             Row(
               children: [
                 Expanded(
