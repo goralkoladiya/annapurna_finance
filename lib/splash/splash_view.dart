@@ -33,17 +33,17 @@ class _SplashViewState extends ConsumerState<SplashView> {
       const Duration(seconds: 3),
           () {
         if(isLoggedIn){
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => CommonWebView(url: url),
-              ));
+              ),(route) => false);
         }else{
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => const LoginView(),
-              ));
+              ),(route) => false);
         }
 
       },

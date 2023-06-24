@@ -33,7 +33,7 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
     double twidht = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginView(),));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginView(),),(route) => false);
         return Future.value(false);
       },
       child: Scaffold(

@@ -181,7 +181,7 @@ class AuthenticationViewModel extends ChangeNotifier {
         //
         //   PrefUtils.clearPrefs();
         //   // Navigator.pop(context);
-        //   Navigator.pushReplacement(context,
+        //   Navigator.pushAndRemoveUntil(context,
         //       MaterialPageRoute(
         //         builder: (context) {
         //           return LoginView();
@@ -245,11 +245,11 @@ class AuthenticationViewModel extends ChangeNotifier {
                                 PrefUtils.clearPrefs();
 
                                 // String url = await PrefUtils.getUrl() ?? '';
-                                Navigator.pushReplacement(
+                                Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => LoginView(),
-                                    ));
+                                    ),(route) => false);
                               }, style:  ElevatedButton.styleFrom(
                                 backgroundColor: ThemeColor.primary,
                                 foregroundColor: Colors.white,
@@ -469,11 +469,11 @@ class AuthenticationViewModel extends ChangeNotifier {
           PrefUtils.setIsLoggedIn(true);
           PrefUtils.setUrl(url);
 
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => CommonWebView(url: url),
-              ));
+              ),(route) => false);
 
         } else {
           handleApiError(response['message'], context);

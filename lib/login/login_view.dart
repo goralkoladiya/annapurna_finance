@@ -28,7 +28,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
     super.didChangeDependencies();
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.none) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NoNetwork(LoginView())));
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => NoNetwork(LoginView())),(route) => false);
       }
 
     });

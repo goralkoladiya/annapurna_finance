@@ -45,11 +45,11 @@ class _NoNetworkState extends State<NoNetwork> {
                     onTap: () {
                       Connectivity().checkConnectivity().then((value) {
                         if (value == ConnectivityResult.none) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NoNetwork(widget.w)));
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NoNetwork(widget.w)));
                         }
                         else
                         {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget.w!));
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => widget.w!));
                         }
                       });
                     },
