@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:annapurna_finance/reset_password/resetPassword.dart';
+import 'package:flutter/src/services/text_formatter.dart';
 import 'package:annapurna_finance/AppImages.dart';
 import 'package:annapurna_finance/api_factory/prefs/pref_utils.dart';
 import 'package:annapurna_finance/constants.dart';
@@ -42,6 +43,7 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     ref.watch(authenticationProvider).noofotpsend=3;
+    ref.watch(authenticationProvider).otperror="";
   }
   @override
   void initState() {
@@ -80,12 +82,13 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
           );
         }
         setState((){
-          secondsRemaining = 10;
+          secondsRemaining = 30;
           enableResend = false;
         });
       }
 
   }
+
   @override
   dispose(){
     timer!.cancel();
@@ -118,164 +121,206 @@ class _forgotPasswordPageState extends ConsumerState<forgotPasswordPage> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Center(child: Image.asset(AppImages.logo, width: 250)),
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                                    height: bheight*0.75,
-                                    width: twidth*0.85,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
+                        Center(child: Image.asset(AppImages.logo, width: 250)),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                              height: bheight*0.80,
+                              width: twidth*0.85,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black,
+                                      width: 3
+                                  ),
+                                  borderRadius: const BorderRadius.all(Radius.circular(20))
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 31.0, left: defaultPadding, bottom: 10),
+                                    child: Text('Forgot Password',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
                                             color: Colors.black,
-                                            width: 3
-                                        ),
-                                        borderRadius: const BorderRadius.all(Radius.circular(20))
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  ABTextInput(
+                                    textInputType: TextInputType.number,
+                                    autoValidator: AutovalidateMode.onUserInteraction,
+                                    titleText: 'Employee ID',
+                                    controller: UserId,
+                                    customInputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    validator: (value) {
+                                      if (inputtedValue != null && (value == null || value.isEmpty)) {
+                                        return 'Please enter Employee ID';
+                                      }return null;
+                                    },
+                                    onChange: (value){
+                                      ref.watch(authenticationProvider).otperror="";
+                                      setState(() => inputtedValue = value);
+                                    },
+                                    hintText: 'Enter Employee ID',
+                                  ),
+                                  SizedBox(height: bheight*0.01,),
+                                  ABTextInput(
+                                    maxLength: 10,
+                                    controller: MobileNumber,
+                                    textInputType: TextInputType.phone,
+                                    autoValidator: AutovalidateMode.onUserInteraction,
+                                    titleText: 'Registered Mobile Number',
+                                    validator: (value) {
+                                      if (inputtedValue != null && (value == null || value.isEmpty  )) {
+                                        return 'Please enter Phone number';
+                                      }
+                                      else if(value!.length!=10)
+                                        {
+                                          return 'Mobile Number should be 10 digits';
+                                        }return null;
+                                    },
+                                    onChange: (value){
+                                      ref.watch(authenticationProvider).otperror="";
+                                      setState(() => inputtedValue = value);
+                                    },
+                                    hintText: 'Enter Mobile Number',
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Row(
                                       children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(top: 31.0, left: defaultPadding, bottom: 10),
-                                          child: Text('Forgot Password',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                        ABTextInput(
-                                          autoValidator: AutovalidateMode.onUserInteraction,
-                                          titleText: 'Employee ID',
-                                          controller: UserId,
-                                          validator: (value) {
-                                            if (inputtedValue != null && (value == null || value.isEmpty)) {
-                                              return 'Please enter Employee ID';
-                                            }return null;
-                                          },
-                                          onChange: (value) => setState(() => inputtedValue = value),
-                                          hintText: 'Enter Employee ID',
-                                        ),
-                                        SizedBox(height: bheight*0.01,),
-                                        ABTextInput(
-                                          controller: MobileNumber,
-                                          textInputType: TextInputType.phone,
-                                          autoValidator: AutovalidateMode.onUserInteraction,
-                                          titleText: 'Registered Mobile Number',
-                                          validator: (value) {
-                                            if (inputtedValue != null && (value == null || value.isEmpty)) {
-                                              return 'Please enter Phone number';
-                                            }return null;
-                                          },
-                                          onChange: (value) => setState(() => inputtedValue = value),
-                                          hintText: 'Enter No.',
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: bheight*0.025,bottom: bheight*0.01,right: defaultPadding),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              InkWell(onTap: enableResend ? ()  {
+                                        ref.watch(authenticationProvider).otperror==""?SizedBox():Icon(Icons.error_outline,color: Colors.red),
+                                        ref.watch(authenticationProvider).otperror==""?SizedBox():Expanded(child: Text("Mobile Number Not Registered for this user",style: TextStyle(color: Colors.red),maxLines: 3,)),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: bheight*0.025,bottom: bheight*0.01,right: defaultPadding),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        InkWell(onTap: enableResend ? ()  {
+                                          _resendCode();
+                                        }: null,
+                                          child:secondsRemaining==0? Text("Send OTP",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),):
+                                                  Text("Resend OTP in $secondsRemaining seconds",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  // Text(
+                                  //   'after $secondsRemaining seconds',
+                                  //   style: TextStyle(color: Colors.black, fontSize: 10),
+                                  // ),
+                                  // Padding(
+                                  //   padding: EdgeInsets.only(top: bheight*0.025,bottom: bheight*0.01,right: defaultPadding),
+                                  //   child: Row(
+                                  //     mainAxisAlignment: MainAxisAlignment.end,
+                                  //     children: [
+                                  //       InkWell(onTap: enableResend ? ()  {
+                                  //
+                                  //         _resendCode();
+                                  //
+                                  //        }: null,
+                                  //         child:!ref.watch(authenticationProvider).otpsend || secondsRemaining==0? Text("Send OTP",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),):
+                                  //         Text("Resend OTP in $secondsRemaining seconds",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: bheight*0.02,right: defaultPadding),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        InkWell(child: Text("(${ref.watch(authenticationProvider).noofotpsend} Attempts left)",))
+                                      ],
+                                    ),
+                                  ),
+                                  Padding( padding: EdgeInsets.only(left: defaultPadding),child: InkWell(child: Text("OTP",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),),
+                                  SizedBox(height: bheight*0.01,),
+                                  OTPTextField(
 
-                                                _resendCode();
+                                    controller: OTP,
+                                    margin: EdgeInsets.symmetric(horizontal: 1),
+                                    // contentPadding: ,
+                                    length: 6,
 
-                                               }: null,
-                                                child:!ref.watch(authenticationProvider).otpsend? Text("Send OTP",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),):
-                                                Text("Resend OTP in $secondsRemaining seconds",style: TextStyle(decoration: TextDecoration.underline,color: ThemeColor.primary),),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(bottom: bheight*0.02,right: defaultPadding),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              InkWell(child: Text("(${ref.watch(authenticationProvider).noofotpsend} Attempts left)",))
-                                            ],
-                                          ),
-                                        ),
-                                        Padding( padding: EdgeInsets.only(left: defaultPadding),child: InkWell(child: Text("OTP",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),),
-                                        SizedBox(height: bheight*0.01,),
-                                        OTPTextField(
-
-                                          controller: OTP,
-                                          margin: EdgeInsets.symmetric(horizontal: 1),
-                                          // contentPadding: ,
-                                          length: 6,
-
-                                          otpFieldStyle: OtpFieldStyle(
-                                            borderColor: ThemeColor.primary,
-                                            enabledBorderColor: ThemeColor.primary,
-                                            focusBorderColor: ThemeColor.primary
-                                          ),
-                                          width: MediaQuery.of(context).size.width,
-                                          fieldWidth: twidth*0.1090,
-                                          style: TextStyle(
-                                              fontSize: bheight*0.03
-                                          ),
-                                          textFieldAlignment: MainAxisAlignment.center,
-                                          fieldStyle: FieldStyle.box,
-                                          onCompleted: (pin) async {
-                                            setState(() {
-                                              otp=pin;
-                                            });
-                                            if (_formKey.currentState!.validate()) {
-                                              FocusManager.instance.primaryFocus?.unfocus();
+                                    otpFieldStyle: OtpFieldStyle(
+                                      borderColor: ThemeColor.primary,
+                                      enabledBorderColor: ThemeColor.primary,
+                                      focusBorderColor: ThemeColor.primary
+                                    ),
+                                    width: MediaQuery.of(context).size.width,
+                                    fieldWidth: twidth*0.1090,
+                                    style: TextStyle(
+                                        fontSize: bheight*0.03
+                                    ),
+                                    textFieldAlignment: MainAxisAlignment.center,
+                                    fieldStyle: FieldStyle.box,
+                                    onCompleted: (pin) async {
+                                      setState(() {
+                                        otp=pin;
+                                      });
+                                      if (_formKey.currentState!.validate()) {
+                                        FocusManager.instance.primaryFocus?.unfocus();
+                                        ref.watch(authenticationProvider).OTPVerificationAPI(
+                                          context: context,
+                                          Phoneno : MobileNumber.text,
+                                          userName: UserId.text,
+                                          OTPNO : pin,
+                                        );
+                                      }
+                                      print("Completed: " + pin);
+                                    },
+                                  ),
+                                  SizedBox(height: bheight*0.01,),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                                    child: Text("(Please enter verification code sent on your number)",style: TextStyle(fontSize: bheight*0.013),),
+                                  ),
+                                  SizedBox(height: bheight*0.02,),
+                                  // ElevatedButton(onPressed: () {
+                                  //   Navigator.pushAndRemoveUntil(context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) {
+                                  //           return ResetPassword("userName");
+                                  //         },
+                                  //       ), (route) => false);
+                                  // }, child: Text("ddd")),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+                                            onPressed: (!userInteracts() || _formKey.currentState == null || !_formKey.currentState!.validate()) ? null :() {
                                               ref.watch(authenticationProvider).OTPVerificationAPI(
                                                 context: context,
                                                 Phoneno : MobileNumber.text,
                                                 userName: UserId.text,
-                                                OTPNO : pin,
+                                                OTPNO : otp,
                                               );
-                                            }
-                                            print("Completed: " + pin);
-                                          },
-                                        ),
-                                        SizedBox(height: bheight*0.01,),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                                          child: Text("(Please enter verification code sent on your number)",style: TextStyle(fontSize: bheight*0.013),),
-                                        ),
-                                        SizedBox(height: bheight*0.02,),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
-                                                  onPressed: (!userInteracts() || _formKey.currentState == null || !_formKey.currentState!.validate()) ? null :() {
-                                                    ref.watch(authenticationProvider).OTPVerificationAPI(
-                                                      context: context,
-                                                      Phoneno : MobileNumber.text,
-                                                      userName: UserId.text,
-                                                      OTPNO : otp,
-                                                    );
-                                                  }, child: Text("Verify & Next")),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(child: OutlinedButton(
-                                              style: OutlinedButton.styleFrom(
-                                                  side: BorderSide(color: Colors.deepPurple,width: 2)
-                                              ),
-                                              onPressed: () async {
 
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginView(),));
-                                              },
-                                              child: Text("Back to Login",style: TextStyle(color: Colors.deepPurple)),
-                                            ))
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                ),
+                                            }, child: Text("Verify & Next")),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(child: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                            side: BorderSide(color: Colors.deepPurple,width: 2)
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginView(),), (route) => false);
+                                        },
+                                        child: Text("Back to Login",style: TextStyle(color: Colors.deepPurple)),
+                                      ))
+                                    ],
+                                  )
+                                ],
                               )
-                            ],
                           ),
                         )
                       ],

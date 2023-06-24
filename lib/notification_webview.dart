@@ -57,9 +57,7 @@ class _NotificationWebViewState extends State<NotificationWebView> {
         geolocationEnabled: true,//support geolocation or not
       ),
     );
-
   }
-
   JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'Toaster',

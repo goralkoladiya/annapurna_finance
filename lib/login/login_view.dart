@@ -9,7 +9,7 @@ import 'package:annapurna_finance/widgets/ab_text_input.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import 'package:flutter/src/services/text_formatter.dart';
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -21,7 +21,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isObscure = true;
-  bool _checkbox = false;
+  bool _checkbox = true;
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -65,7 +65,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     Padding(
                       padding: const EdgeInsets.all(25.0),
                       child: Container(
-                        height: 420,
+                        height: 450,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                               border: Border.all(
@@ -87,9 +87,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                         fontWeight: FontWeight.bold)),
                               ),
                               ABTextInput(
+                                textInputType: TextInputType.number,
                                 iserror: ref.watch(authenticationProvider).loginresult?null:Colors.red,
                                 autoValidator: AutovalidateMode.onUserInteraction,
                                 titleText: 'Username',
+                                customInputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                 validator: (value) {
                                   if (inputtedValue != null && (value == null || value.isEmpty)) {
                                     return 'Please enter username';
@@ -140,6 +142,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                               Row(
                                 children: [
                                   Checkbox(
+                                    activeColor: ThemeColor.primary,
                                     value: _checkbox,
                                     onChanged: (value) {
                                       setState(() {
@@ -147,11 +150,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                       });
                                     },
                                   ),
-                                  Text('Remember Password'),
+                                  Text('Remember Me'),
                                   Spacer(),
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => forgotPasswordPage(),));
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => forgotPasswordPage(),),(route) =>  false,);
                                     },
                                     child: Text('Forgot Password?',
                                       style: TextStyle(

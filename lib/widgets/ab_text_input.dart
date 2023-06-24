@@ -102,6 +102,7 @@ class ABTextInput extends StatelessWidget {
             controller: controller,
             onTap: onTap,
             decoration: InputDecoration(
+              errorMaxLines: 2,
               errorStyle: const TextStyle(fontSize: 11, height: 1.0),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(

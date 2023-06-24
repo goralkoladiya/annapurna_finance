@@ -1,5 +1,6 @@
 import 'package:annapurna_finance/NoNetwork.dart';
 import 'package:annapurna_finance/api_factory/base_view_model.dart';
+import 'package:annapurna_finance/change_password/changePassword.dart';
 import 'package:annapurna_finance/notification_webview.dart';
 import 'package:annapurna_finance/notifier/providers.dart';
 import 'package:annapurna_finance/utils/dialogs.dart';
@@ -241,14 +242,15 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
                   Expanded(
                     child: GestureDetector(
                       onTap: (){
+                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  NotificationWebView(url: 'http://maximoglobalsystems.com/main/landing/passwordchange/${ref.watch(authenticationProvider).kCurrentUser?.userid}'),
+                              builder: (context) =>  changePassword(),
                             ));
                       },
                       child: const Text(
-                        'Reset Password',
+                        'Change Password',
                         style:
                         TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
