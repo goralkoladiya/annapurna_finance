@@ -321,7 +321,8 @@ class AuthenticationViewModel extends ChangeNotifier {
   }) {
     var params = {
       "UserID": UserID,
-      "NewPassword": NewPassword
+      "NewPassword": NewPassword,
+      "ConfirmPassword":NewPassword
     };
     Api.request(
       method: HttpMethod.post,

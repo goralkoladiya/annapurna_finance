@@ -43,7 +43,7 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
     super.didChangeDependencies();
     Connectivity().checkConnectivity().then((value) {
       if (value == ConnectivityResult.none) {
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NoNetwork(CommonWebView(url: widget.url,))));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => NoNetwork(CommonWebView(url: widget.url,))),(route) => false);
       }
 
     });
@@ -177,7 +177,7 @@ class _CommonWebViewState extends ConsumerState<CommonWebView> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CommonWebView(url: widget.url),
-                            ));
+                            ),(route) => false);
                         // Navigator.pop(context);
                       },
                       child: const Text(

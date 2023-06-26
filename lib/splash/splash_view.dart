@@ -18,6 +18,7 @@ class SplashView extends ConsumerStatefulWidget {
 class _SplashViewState extends ConsumerState<SplashView> {
 
 
+
   @override
   void initState() {
     navigateScreen();
